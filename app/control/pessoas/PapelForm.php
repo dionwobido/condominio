@@ -22,7 +22,7 @@ class PapelForm extends TPage
         $this->setAfterSaveAction(new TAction(['PapelList', 'onReload'], ['register_state' => 'true']) );
 
         $this->setDatabase('db_condominio');
-        $this->setActiveRecord('Grupo');
+        $this->setActiveRecord('Papel');
 
         $this->form = new BootstrapFormBuilder('form_Papel');
         $this->form->setFormTitle('Papel');

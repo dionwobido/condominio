@@ -64,6 +64,8 @@ class CidadeList extends TPage
         //Cria datagrid
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
         $this->datagrid->style = 'width 100%';
+        $this->datagrid->datatable = 'true';
+        $this->datagrid->enablePopover('Popover', '<b>{nome}<br>{estado->nome}<br>{estado->uf}');
 
         //cria as colunas
         $column_id = new TDataGridColumn('id', 'Id', 'center', '10%');
