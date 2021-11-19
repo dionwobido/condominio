@@ -11,6 +11,14 @@
         <action>CidadeList</action>
         <icon>fas:adjust fa-fw #361bf2</icon>
       </menuitem>
+      <menuitem label="Cadastro de Grupos">
+        <action>GrupoList</action>
+        <icon>fas:adjust fa-fw #361bf2</icon>
+      </menuitem>
+      <menuitem label="Cadastro Papel">
+        <action>PapelList</action>
+        <icon>fas:adjust fa-fw #361bf2</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">
