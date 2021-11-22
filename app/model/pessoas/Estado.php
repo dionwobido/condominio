@@ -1,5 +1,7 @@
 <?php
 
+    use Adianti\Database\TRecord;
+
     class Estado extends TRecord
     {
         const TABLENAME = 'estado';

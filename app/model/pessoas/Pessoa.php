@@ -1,5 +1,7 @@
 <?php
 
+use Adianti\Database\TRecord;
+
     class Pessoa extends TRecord
     {
         const TABLENAME = 'pessoa';
@@ -15,6 +17,7 @@
           parent::addAttribute('codigo_nacional');
           parent::addAttribute('codigo_estadual');
           parent::addAttribute('codigo_municipal');
+          parent::addAttribute('fone');
           parent::addAttribute('email');
           parent::addAttribute('observacao');
           parent::addAttribute('cep');
@@ -24,10 +27,26 @@
           parent::addAttribute('bairro');
           parent::addAttribute('cidade_id');
           parent::addAttribute('grupo_id');
+          parent::addAttribute('create_at');
+          parent::addAttribute('update_at');
         }
 
-        public function get_estado()
+        public function get_cidade()
         {
-            return Estado::find($this->estado_id);
+            return Cidade::find($this->cidade_id);
+
+        }
+        
+        public function get_grupo()
+        {
+            return Grupo::find($this->grupo_id);
+        }
+
+        public function delete($id = null)
+        {
+            $id = isset($id) ? : $this ->id;
+
+            PessoaPapel::where('pessoa_id', '=', $this->id) ->delete();
+            parent::delete($id);
         }
     } 

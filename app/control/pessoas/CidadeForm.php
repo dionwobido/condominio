@@ -70,4 +70,4 @@ class CidadeForm extends TPage
     {
         TScript::create("Template.closeRightPanel()");
     }
-}hgt
+}
