@@ -24,8 +24,6 @@
           parent::addAttribute('bairro');
           parent::addAttribute('cidade_id');
           parent::addAttribute('grupo_id');
-          parent::addAttribute('created_at');
-          parent::addAttribute('updated_at');
         }
 
         public function get_estado()
