@@ -181,4 +181,180 @@ class PessoaForm extends TWindow
     {
         $this->form->clear(TRUE);
     }
+
+    public function onEdit($param)
+    {
+        try
+        {
+            if (isset($param['key']))
+            {
+                $key - $param['key'];
+                TTransaction::open('db_condominio');
+                $object = new Pessoa($key);
+
+                $object->papel_id = PessoaPapel::where('pessoa_papel', '=', $object->id)->gerIndexedArray('pessoa_id');
+                $this->form->setData($object);
+
+                $data = new stdClass;
+                $data->estado_id = $object->cidade->estado_id;
+                $data->cidade_id = $object->cidade_id;
+                TForm::sendData('form_pessoa', $data);
+
+                TTransaction::close();
+            }
+            else
+            {
+                $this->Form->clear(TRUE);
+            }
+        }
+        catch(Exception $e)
+            {
+                new TMessage('error', $e->getMessage());
+                TTransaction::rollback();
+            }
+    }
+    public function onChangeEstado($param)
+    {
+        try
+        {
+            TTransaction::open('de_condominio');
+
+            if (!empty($param['estado_id']))
+            {
+                $container = TCriteria::create(['estado_id' => $param['estado_id']]);
+
+                TDBCombo::reloadFromModel('form_Pessoa', 'Cidade_id', 'db_condominio', 'Cidade', 'id', '{nome} {(id)}', 'nome', $criteria, TRUE);
+            }
+            else 
+                {
+                    TCombo::clearField('form_Pessoa', 'cidade_id');
+                }
+                TTransaction::close();
+        }
+        catch(Exception $e)
+            {
+                new TMessage('error', $e->getMessage());
+                TTransaction::rollback();
+            }
+    }
+
+    //Autocompleta campos a partir do CNPJ
+    public function onExitCNPJ($param)
+    {
+        session_write_close();
+
+        try
+        {
+            $cnpj = preg_replace('/[^0-9]/', '', $param['codigo_nacional']);
+            $url = 'http://receitaws.com.br/v1/cnpj/'.$cnpj;
+
+            $content = @file_get_contents($url);
+
+            if ($content !== false)
+            {
+                $cnpj_data = json_decode($content);
+
+                $data = new stdClass;
+                if (is_object($cnpj_data) && $cnpj_data->statud !== 'ERROR')
+                {
+                    $data->tipo = 'J';
+                    $data->nome = $cnpj_data->nome;
+                    $data->nome_fantasia = !empty($cnpj_data->Fantasia) ? $cnpj_data->fantasia : $cnpj_data->nome;
+
+                    if (!empty($param ['cep']))
+                    {
+                        $data->cep = $cnpj_data->cep;
+                        $data->numero = $cnpj_data->numero;
+                    }
+
+                    if (!empty($param ['numero']))
+                    {
+                        $data->numero = $cnpj_data->numero;
+                    }
+
+                    if (!empty($param ['fone']))
+                    {
+                        $data->fone = $cnpj_data->fone;
+                    }
+
+                    if (!empty($param ['email']))
+                    {
+                        $data->email = $cnpj_data->email;
+                    }
+                    TForm::sendData('form_Pessoa', $data, false, true);
+                }
+                else 
+                {
+                    
+                $data->nome = '';
+                $data->nome_fantasia = '';
+                $data->cep = '';
+                $data->numero = '';
+                $data->telefone = '';
+                $data->email = '';
+                TForm::sendData('form_Pessoa', $data, false, true);
+                    
+                }
+            } 
+        }
+        catch(Exception $e)
+        {
+            new TMessage('error', $e->getMessage());
+            TTransaction::rollback();
+        }
+    }
+
+    //Autocompleta cep
+    public function onExitCep($param)
+    {
+        session_write_close();
+
+        try
+        {
+            $cep = preg_replace('/[^0-9]/', '', $param['cep']);
+            $url = 'http://viacep.com.br/ws/'.$cep.'/json/unicode/';
+
+            $content = @file_get_contents($url);
+            if ($content !== false)
+            {
+                $cep_data = jason_decde($content);
+
+                $data = new stdClass;
+                if(is_object($cep_data) && empty($cep_data->error))
+                {
+                    TTransaction::open('db_condominio');
+                    $estado = Estado::where('uf', '=', $cep_data->uf)->first();
+                    $cidade = Cidade::where('codigo_ibge', '=', $cep_data->ibge)->first();
+                    TTransaction::close();
+
+                    $data->logradouro = $cep_data->logradouro;
+                    $data->complemento = $cep_data->complemento;
+                    $data->bairro = $cep_data->bairro;
+                    $data->estado_id = $estado->id ?? '';
+                    $data->cidade_id = $cidade->id ?? '';
+
+                    TForm::sendData('form_Pessoa', $data, false, true);
+                }
+                else
+                {
+                    $data->logradouro = '';
+                    $data->complemento = '';
+                    $data->bairro = '';
+                    $data->estado_id = '';
+                    $data->cidade_id = '';
+
+                    TForm::sendData('form_Pessoa', $data, false, true);
+                }
+            }
+        }
+        catch (Exception $e)
+        {
+            new TMessage('error', $e->getMessage());
+        }
+    }
+
+    public static function onClose()
+    {
+        parent::closeWindow();
+    }
 }
