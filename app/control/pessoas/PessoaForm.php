@@ -2,9 +2,16 @@
 
 use Adianti\Control\TAction;
 use Adianti\Control\TWindow;
+use Adianti\Core\AdiantiCoreTranslator;
 use Adianti\Database\Form\TCriteria;
 use Adianti\Widget\Form\TEntry;
 use Adianti\Database\Form\TFilter;
+use Adianti\Database\TTransaction;
+use Adianti\Validator\TEmailValidator;
+use Adianti\Validator\TRequiredValidator;
+use Adianti\Widget\Dialog\TMessage;
+use Adianti\Widget\Form\TForm;
+use Adianti\Widget\Form\TLabel;
 use Adianti\Widget\Wrapper\TCombo;
 use Adianti\Widget\Wrapper\TDBCombo;
 use Adianti\Widget\Wrapper\TText;
@@ -64,7 +71,114 @@ class PessoaForm extends TWindow
         $observacao->setsize('100%', 60);
         $tipo->addItems(['F' => 'Fisica', 'J' => 'Juridica']);
 
+        //Adicionar os campos
+        $this->form->addFields([new TLabel('Id')], [$id]);
+        $this->form->addFields([new TLabel('Tipo')], [$tipo], [new TLabel('CPF/CNPJ')], [$codigo_nacional]);
+        $this->form->addFields([new TLabel('Nome')], [$nome]);
+        $this->form->addFields([new TLabel('Nome Fantasia')], [$nome_fantasia]);
+        $this->form->addFields([new TLabel('Papel')], [$papel_id], [new TLabel('Grupo')], [$grupo_id]);
+        $this->form->addFields([new TLabel('I. E.')], [$codigo_estadual], [new TLabel('I. M.')], [$codigo_municipal]);
+        $this->form->addFields([new TLabel('Fone')], [$fone], [new TLabel('Email')], [$email]);
+        $this->form->addFields([new TLabel('Papel')], [$papel_id], [new TLabel('Grupo')], [$grupo_id]);
+        $this->form->addFields([new TLabel('Observação')], [$observacao]);
 
+        $this->form->addFields([new TForm('Endereço')]);
+        $this->form->addFields([new TLabel('CEP')], [$cep])->layout = ['col-sm-2 control-label', 'col-sm-4'];
+        $this->form->addFields([new TLabel('Logradouro')], [$logradouro], [new TLabel('Número')], [$numero]);
+        $this->form->addFields([new TLabel('Complemento')], [$complemento], [new TLabel('Bairro')], [$bairro]);
+        $this->form->addFields([new TLabel('Estado')], [$estado_id], [new TLabel('Cidade')], [$cidade_id]);
 
+        //setMask
+        $fone->setMask('(99)99999-9999');
+        $cep->setMask('99.999-999');
+
+        //setSize
+        $id->setsize('100%');
+        $nome->setsize('100%');
+        $nome_fantasia->setsize('100%');
+        $tipo->setsize('100%');
+        $codigo_nacional->setsize('100%');
+        $codigo_estadual->setsize('100%');
+        $codigo_municipal->setsize('100%');
+        $fone->setsize('100%');
+        $email->setsize('100%');
+        $observacao->setsize('100%');
+        $cep->setsize('100%');
+        $logradouro->setsize('100%');
+        $numero->setsize('100%');
+        $complemento->setsize('100%');
+        $bairro->setsize('100%');
+        $cidade_id->setsize('100%');
+        $grupo_id->setsize('100%');
+
+        $id-> setEditable(FALSE);
+        $nome->addValidation('Nome', new TRequiredValidator);
+        $nome_fantasia->addValidation('Nome Fantasia', new TRequiredValidator);
+        $tipo->addValidation('Tipo', new TRequiredValidator);
+        $codigo_nacional->addValidation('Codigo Nacional', new TRequiredValidator);
+        $grupo_id->addValidation('Grupo', new TRequiredValidator);
+        $fone->addValidation('Fone', new TRequiredValidator);
+        $email->addValidation('Email', new TRequiredValidator);
+        $email->addValidation('Email', new TEmailValidator);
+        $cidade_id->addValidation('Cidade', new TRequiredValidator);
+        $cep->addValidation('Cep', new TRequiredValidator);
+        $logradouro->addValidation('Logradouro', new TRequiredValidator);
+        $numero->addValidation('Numero', new TRequiredValidator);
+
+        $btn = $this->form->addAction(_t('Save'), new TAction([$this, 'onSave']), 'fa:save' );
+        $btn->class = 'btn btn-sm btn-primary';
+        $this->form->addActionLink(_t('New'), new TAction([$this, 'onEdit']), 'fa:eraser red');
+
+        $this->form->addHeaderActionLink(_t('Close'), new TAction([$this, 'onClose']), 'fa:times red');
+
+        $container = new TVBox;
+        $container->style = 'width: 100%';
+        $container->add($this->form);
+
+        parent::add($container);
+    }
+
+    public function onSave($param)
+    {
+        try
+        {
+            TTransaction::open('db_condominio');
+
+            $this->form->validate();
+            $data = $this->form->validate();
+
+            $object = new Pessoa;
+            $object->fromArray((array)$data);
+            $object->store();
+
+            PessoaPapel::where('pessoa_id', '=', $object->id)->delete();
+
+            if ($data->$papel_id)
+            {
+                foreach ($data->$papel_id as $papel_id);
+                {
+                    $pp = new PessoaPapel();
+                    $pp->pessoa_id = $object->id;
+                    $pp->store();
+                }
+                
+            }   
+            $data->id = $object->id;
+            
+            $this->form->setData($data);
+            TTransaction::close();
+
+            new TMessage('Info', AdiantiCoreTranslator::translate('Record Save'));
+        }
+        catch(Exception $e)
+        {
+            new TMessage('error', $e->getMessage());
+            $this->form->setData($this->form->getData());
+            TTransaction::rollback();
+        }
+    }
+    public function onClear($param)
+    {
+        $this->form->clear(TRUE);
     }
 }
