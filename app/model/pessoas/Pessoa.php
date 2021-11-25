@@ -46,7 +46,7 @@ use Adianti\Database\TRecord;
         {
             $id = isset($id) ? : $this ->id;
 
-            PessoaPapel::where('pessoa_id', '=', $this->id) ->delete();
+            PessoaPapel::where('pessoa_id', '=', $this->id)->delete();
             parent::delete($id);
         }
     } 

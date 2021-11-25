@@ -28,8 +28,8 @@ class PessoaList extends TPage
 
         $this->setDatabase('db_condominio');
         $this->setActiveRecord('Pessoa');
-        $this->setDefaultOrder('id', 'asc');// ordena por id
-        $this->setLimit(10);//limite da quantidade por pagina
+        $this->setDefaultOrder('id', 'asc');
+        $this->setLimit(10);
 
         $this->addFilterField('id', '=', 'id');
         $this->addFilterField('nome_fantasia', 'like', 'nome_fantasia');
@@ -37,7 +37,7 @@ class PessoaList extends TPage
         $this->addFilterField('email', 'like', 'email');
         $this->addFilterField('grupo_id', '=', 'grupo_id');
 
-        //Criar os Forms
+        //Criar os forms
         $this->form = new BootstrapFormBuilder('form_search_Pessoa');
         $this->form->setFormTitle('Pessoa');
 
@@ -45,14 +45,14 @@ class PessoaList extends TPage
         $nome_fantasia = new TEntry('nome_fantasia');
         $fone = new TEntry('fone');
         $email = new TEntry('email');
-        $grupo_id = new TDBUniqueSearch('grupo_id', 'db_condominio', 'Grupo', 'id', 'nome_fantasia');
+        $grupo_id = new TDBUniqueSearch('grupo_id', 'db_condominio', 'Grupo', 'id', 'nome');
         $grupo_id->setMinLength(0);
 
-        $this->form->addFields([new TLabel('Id')], [$id]);
-        $this->form->addFields([new TLabel('Nome_fantasia')], [$nome_fantasia]);
-        $this->form->addFields([new TLabel('Fone')], [$fone]);
-        $this->form->addFields([new TLabel('Email')], [$email]);
-        $this->form->addFields([new TLabel('Grupo')], [$grupo_id]);
+        $this->form->addFields( [ new TLabel('Id') ], [ $id ]);
+        $this->form->addFields( [ new TLabel('Nome Fantasia') ], [ $nome_fantasia ]);
+        $this->form->addFields( [ new TLabel('Fone') ], [ $fone ]);
+        $this->form->addFields( [ new TLabel('Email') ], [ $email ]);
+        $this->form->addFields( [ new TLabel('Grupo') ], [ $grupo_id ]);
 
         $id->setSize('100%');
         $nome_fantasia->setSize('100%');
@@ -60,20 +60,19 @@ class PessoaList extends TPage
         $email->setSize('100%');
         $grupo_id->setSize('100%');
 
-        $this->form->setData(TSession::getValue(__CLASS__.'_filter_data'));
+        $this->form->setData( TSession::getValue(__CLASS__.'_filter_data') );
 
         $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
         $this->form->addActionLink(_t('New'), new TAction(['PessoaForm', 'onEdit']), 'fa:plus green');
 
-        //Criar o datagrid
+        //Criar o Datagrid
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
-        $this->datagrid->style = 'width 100%';
+        $this->datagrid->style = 'width: 100%';
 
-        //criar colunas no datagrid
-
+        //Criar colunas no datagrid
         $column_id = new TDataGridColumn('id', 'Id', 'left');
-        $column_nome_fantasia = new TDataGridColumn('nome_fantasia', 'Nome_fantasia', 'left');
+        $column_nome_fantasia = new TDataGridColumn('nome_fantasia', 'Nome Fantasia', 'left');
         $column_fone = new TDataGridColumn('fone', 'Fone', 'left');
         $column_email = new TDataGridColumn('email', 'Email', 'left');
         $column_grupo_id = new TDataGridColumn('grupo_id', 'Grupo', 'left');
@@ -84,21 +83,21 @@ class PessoaList extends TPage
         $this->datagrid->addColumn($column_email);
         $this->datagrid->addColumn($column_grupo_id);
 
+        $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
+        $column_nome_fantasia->setAction(new TAction([$this, 'onReload']), ['order' => 'nome_fantasia']);
 
-        $column_id->setAction(new TAction([$this, 'onreload']), ['order' => 'id']);
-        $column_nome_fantasia->setAction(new TAction([$this, 'onreload']), ['order' => 'nome_fantasia']);
-        $action1 = new TDataGridAction(['PessoaFormView', 'onEdit'], ['id' => '{id}', 'register_state' => 'false']);
-        $action2 = new TDataGridAction(['PessoaForm', 'onEdit'], ['id' => '{id}']);
-        $action3 = new TDataGridAction([$this, 'ondelete'], ['id' => '{id}', 'register_state' => 'false']);
+        $action1 = new TDataGridAction(['PessoaFormView', 'onEdit'], ['id'=>'{id}', 'register_state' => 'false']);
+        $action2 = new TDataGridAction(['PessoaForm', 'onEdit'], ['id'=>'{id}']);
+        $action3 = new TDataGridAction([$this, 'onDelete'], ['id'=>'{id}', 'register_state' => 'false']);
 
-        $this->datagrid->addAction($action1, _t('View'), 'fa:serch gray');
+        $this->datagrid->addAction($action1, _t('View'), 'fa:search gray');
         $this->datagrid->addAction($action2, _t('Edit'), 'far:edit blue');
-        $this->datagrid->addAction($action3, _t('Delete'), 'far:edtrashit red');
+        $this->datagrid->addAction($action3, _t('Delete'), 'far:trash-alt red');
 
         $this->datagrid->createModel();
 
         $this->pageNavigation = new TPageNavigation;
-        $this->pageNavigation->setAction(new TAction([$this, 'onReload']) );
+        $this->pageNavigation->setAction(new TAction([$this, 'onReload']));
 
         $panel = new TPanelGroup('', 'white');
         $panel->add($this->datagrid);
@@ -108,15 +107,15 @@ class PessoaList extends TPage
         $dropdown->setPullSide('right');
         $dropdown->setButtonClass('btn btn-default waves-effect dropdown-toggle');
         $dropdown->addAction(_t('Save as CSV'), new TAction([$this, 'onExportCSV'], ['register_state' => 'false', 'static' => '1']), 'fa:table blue');
-        $dropdown->addAction(_t('Save as PDF'), new TAction([$this, 'onExportPDF'], ['register_state' => 'false', 'static' => '1']), 'fa:file-pdf red');
+        $dropdown->addAction(_t('Save as PDF'), new TAction([$this, 'onExportPDF'], ['register_state' => 'false', 'static' => '1']), 'far:file-pdf red');
         $panel->addHeaderWidget($dropdown);
-        
+
         $container = new TVBox;
         $container->style = 'width: 100%';
         $container->add($this->form);
         $container->add($panel);
 
         parent::add($container);
-    }
 
+    }
 }
