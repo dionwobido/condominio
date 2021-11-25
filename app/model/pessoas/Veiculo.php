@@ -21,6 +21,6 @@
 
         public function get_estado()
         {
-            return Estado::find($this->pessoa_id);
+            return Pessoa::find($this->pessoa_id);
         }
     } 
