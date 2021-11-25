@@ -58,7 +58,8 @@ class PessoaForm extends TWindow
         $filter->add(new TFilter('id', '<', '0'));
         $cidade_id = new TDBCombo('cidade_id', 'db_condominio', 'Cidade', 'id', 'nome', 'nome', $filter);
         $grupo_id = new TDBUniqueSearch('grupo_id', 'db_condominio', 'Grupo', 'id', 'nome');
-        $papel_id = new TDBUniqueSearch('papel_id', 'db_condominio', 'Papel', 'id', 'nome');
+
+        $papel_id = new TDBUniqueSearch('papel_id', 'db_condominio', 'Papel', 'id', 'nome');//TDBUniqueSearch   TDBMultiSearch   
         $estado_id = new TDBCombo('estado_id', 'db_condominio', 'Estado', 'id', '{nome} {uf}');
 
         $estado_id->setChangeAction(new TAction([$this, 'onChangeEstado']));
@@ -215,7 +216,7 @@ class PessoaForm extends TWindow
         }  
     }
     
-    public function onChangeEstado($param)
+    public static function onChangeEstado($param)
     {
         try
         {
@@ -240,7 +241,7 @@ class PessoaForm extends TWindow
 
     //Autocompleta campos apartir do CNPJ
 
-    public function onExitCNPJ($param)
+    public static function onExitCNPJ($param)
     {
         session_write_close();
 
@@ -299,7 +300,7 @@ class PessoaForm extends TWindow
     }
 
     //Autocompleta cep
-    public function onExitCEP($param)
+    public static function onExitCEP($param)
     {
         session_write_close();
 

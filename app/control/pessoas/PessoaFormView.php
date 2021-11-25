@@ -2,7 +2,10 @@
 
 use Adianti\Control\TAction;
 use Adianti\Control\TPage;
+use Adianti\Control\TWindow;
 use Adianti\Database\TTransaction;
+use Adianti\Widget\Base\TElement;
+use Adianti\Widget\Base\TScript;
 use Adianti\Widget\Container\TVBox;
 use Adianti\Widget\Dialog\TMessage;
 use Adianti\Widget\Form\TDateTime;
@@ -62,7 +65,7 @@ class PessoaFormView extends TPage
             $text_nome_fantasia = new TTextDisplay($master_object->nome_fantasia, '#333333', '12px', '');
             $text_codigo_nacional = new TTextDisplay($master_object->codigo_nacional, '#333333', '12px', '');
             $text_fone = new THyperLink('<i class="fa fa-phone-square-alt"></i> '.$master_object->fone,'callto:'.$master_object->fone, '#007bff', '12px', '');
-            $text_enail = new THyperLink('<i class="fa fa-envelope"></i> '.$master_object->email, 'https://mail.google.com/u/0/?view=cm&fs=1&to='.$master_object->email.'&tf=1', '#007bff', '12px', '');
+            $text_email = new THyperLink('<i class="fa fa-envelope"></i> '.$master_object->email, 'https://mail.google.com/u/0/?view=cm&fs=1&to='.$master_object->email.'&tf=1', '#007bff', '12px', '');
             $link_maps = 'https://www.google.com/maps/place/' . $master_object->logradouro.','.
                                                                 $master_object->numero.','.
                                                                 $master_object->bairro.','.
@@ -70,7 +73,17 @@ class PessoaFormView extends TPage
                                                                 $master_object->cidade->estado->uf;
             $text_cidade =new THyperLink('<i class="fa fa-map-marker-alt"></i> Link para google maps', $link_maps, '#007bff', '12px', '');            
             $text_created_at = new TTextDisplay(TDateTime::convertToMask($master_object->created_at, 'yyyy-mm-dd hh:ii:ss', 'dd/mm/yyyy hh:ii:ss'), '#333333', '12px', '');
-            $text_updated_at = new TTextDisplay(TDateTime::convertToMask($master_object->update_at, 'yyyy-mm-dd hh:ii:ss', 'dd/mm/yyyy hh:ii:ss'), '#333333', '12px', '');
+            $text_updated_at = new TTextDisplay(TDateTime::convertToMask($master_object->updated_at, 'yyyy-mm-dd hh:ii:ss', 'dd/mm/yyyy hh:ii:ss'), '#333333', '12px', '');
+
+            $this->form->addFields([$label_id], [$text_id]);
+            $this->form->addFields([$label_nome_fantasia], [$text_nome_fantasia]);
+            $this->form->addFields([$label_codigo_nacional], [$text_codigo_nacional]);
+            $this->form->addFields([$label_fone], [$text_fone]);
+            $this->form->addFields([$label_email], [$text_email]);
+            $this->form->addFields([$label_cidade], [$text_cidade]);
+            $this->form->addFields([$label_created_at], [$text_created_at]);
+            $this->form->addFields([$label_updated_at], [$text_updated_at]);
+
         }
         catch (Exception $e)
         {
@@ -78,4 +91,89 @@ class PessoaFormView extends TPage
         }
     }
     
+    //IMPRIME A VIEW
+    public function onPrint($param)
+    {
+        try
+        {
+            $this->onEdit($param);
+
+            $html = clone $this->form;
+            $contents = file_get_contents('app/resources/styles-print.html').$html->getcontents();
+
+            //converte o html em pdf
+            $dompdf = new \Dompdf\Dompdf();
+            $dompdf->loadHtml($contents);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+
+            $file = 'app/output/pessoa.pdf';
+
+            file_put_contents($file, $dompdf->output());
+
+            //abrir o pdf em uma janela
+            $window = TWindow::create('Export', 0.8, 0.8);
+            $object = new TElement('object');
+            $object->data = $file. '?rndval'.uniqid();
+            $object->type = 'application/pdf';
+            $object->style ="width: 100%; height:calc(100% -10ps)";
+            $window->add($object);
+            $window->show();
+            
+        }
+
+        catch (Exception $e)
+        {
+            new TMessage('error', $e->getMessage());
+        }
+    }
+
+    //gerar Etiqueta
+    public function onGeraEtiqueta($param)
+    {
+        try
+        {
+            $this->onEdit($param);
+
+            TTransaction::open('db_condominio');
+            $pessoa = new Pessoa('key');
+
+            $replaces = $pessoa->toArray();
+            $replaces['cidade'] = $pessoa->cidade;
+            $replaces['estado'] = $pessoa->cidade->estado;
+
+            $html = new THmlRendere('app/resources/email-label.html');
+            $html->enableSection('main', $replaces);
+            $contents = file_get_contents('app/resources/style-print.html').$html->getContents;
+
+            //converte o html em pdf
+            $dompdf = new \Dompdf\Dompdf();
+            $dompdf->loadHtml($contents);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+
+            $file = 'app/output/pessoa.pdf';
+
+            //abrir o pdf em uma janela
+            $window = TWindow::create('Export', 0.8, 0.8);
+            $object = new TElement('object');
+            $object->data = $file. '?rndval'.uniqid();
+            $object->type = 'application/pdf';
+            $object->style ="width: 100%; height:calc(100% -10ps)";
+            $window->add($object);
+            $window->show();
+
+            TTransaction::close();
+        }
+
+        catch (Exception $e)
+        {
+            new TMessage('error', $e->getMessage());
+        }
+    }
+
+    public function onClose($param)
+    {
+        TScript::create("Template.closeRigthtPanel()");
+    }
 }
