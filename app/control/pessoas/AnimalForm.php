@@ -8,7 +8,7 @@ use Adianti\Widget\Form\TEntry;
 use Adianti\Widget\Form\TLabel;
 use Adianti\Wrapper\BootstrapFormBuilder;
 
-class VeiculoForm extends TPage
+class AnimalForm extends TPage
 {
     protected $form;
 
@@ -19,44 +19,35 @@ class VeiculoForm extends TPage
         parent::__construct();
 
         parent::setTargetContainer('adianti_right_panel');
-        $this->setAfterSaveAction(new TAction(['VeiculoList', 'onReload'], ['register_state' => 'true']) );
+        $this->setAfterSaveAction(new TAction(['AnimalList', 'onReload'], ['register_state' => 'true']) );
 
         $this->setDatabase('db_condominio');
-        $this->setActiveRecord('Veiculo');
+        $this->setActiveRecord('Animal');
 
-        $this->form = new BootstrapFormBuilder('form_Veiculo');
-        $this->form->setFormTitle('Veiculo');
+        $this->form = new BootstrapFormBuilder('Animal');
+        $this->form->setFormTitle('Animal');
         $this->form->setClientValidation(true);
         $this->form->setColumnClasses(2, ['col-sm-5 col-lg-4', 'col-sm-7 col-lg-8']);
 
         $id = new TEntry('id');
-        $placa = new TEntry('placa');
-        $marca = new TEntry('marca');
-        $modelo = new TEntry('modelo');
-        $cor = new TEntry('cor');
-        $ano_modelo = new TEntry('ano_modelo');
+        $nome = new TEntry('nome');
+        $observacao = new TEntry('observacao');
         $pessoa_id = new TDBUniqueSearch('pessoa_id', 'db_condominio', 'Pessoa', 'id', 'nome');
+        //$estado_id->setMinLength(0);
+        //$estado_id->setMask('{nome} ({pessoa})');//confirmar o pessoa
 
         $this->form->addFields([ new TLabel('Id')], [$id]);
-        $this->form->addFields([ new TLabel('placa')], [$placa]);
-        $this->form->addFields([ new TLabel('marca')], [$marca]);
-        $this->form->addFields([ new TLabel('modelo')], [$modelo]);
-        $this->form->addFields([ new TLabel('cor')], [$cor]);
-        $this->form->addFields([ new TLabel('ano_modelo')], [$ano_modelo]);
-        $this->form->addFields([ new TLabel('Pessoa_id')], [$pessoa_id]);
+        $this->form->addFields([ new TLabel('Nome')], [$nome]);
+        $this->form->addFields([ new TLabel('Observação')], [$observacao]);
+        $this->form->addFields([ new TLabel('Pessoa')], [$pessoa_id]);
 
-        $placa->addValidation('Placa', new TRequiredValidator);
-        $marca->addValidation('Marca', new TRequiredValidator);
-        $modelo->addValidation('Modelo', new TRequiredValidator);
-        $cor->addValidation('Cor', new TRequiredValidator);
-        //$ano_modelo->addValidation('Ano Modelo', new TRequiredValidator);
+        $nome->addValidation('Nome', new TRequiredValidator);
+        //$observacao->addValidation('Observação', new TRequiredValidator);
         $pessoa_id->addValidation('Pessoa', new TRequiredValidator);
 
         $id->setSize('100%');
-        $placa->setSize('100%');
-        $marca->setSize('100%');
-        $cor->setSize('100%');
-        $ano_modelo->setSize('100%');
+        $nome->setSize('100%');
+        $observacao->setSize('100%');
         $pessoa_id->setSize('100%');
 
         $id->setEditable(FALSE);

@@ -70,7 +70,7 @@ class PapelList extends TPage
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id' =>'{id}']);
 
         $this->datagrid->addAction($action1, _t('Edit'), 'fa:edit blue');
-        $this->datagrid->addAction($action2, _t('Delete'), 'fa:edit red');
+        $this->datagrid->addAction($action2, _t('Delete'), 'fa:trash red');
 
         $this->datagrid->createModel();
 

@@ -33,7 +33,7 @@ class CidadeList extends TPage
         $this->setDatabase('db_condominio');
         $this->setActiveRecord('Cidade');
         $this->setDefaultOrder('id', 'asc');
-        $this->setOrderCommand('estado->nome', '(SELECT nome FROM estado WERE id=codade.estado_id)');
+        $this->setOrderCommand('estado->nome', '(SELECT nome FROM estado WHERE id=cidade.estado_id)');
         $this->setLimit(10);
 
         $this->addFilterField('id', '=','id');
@@ -90,7 +90,7 @@ class CidadeList extends TPage
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id' =>'{id}']);
 
         $this->datagrid->addAction($action1, _t('Edit'), 'fa:edit blue');
-        $this->datagrid->addAction($action2, _t('Delete'), 'fa:edit red');
+        $this->datagrid->addAction($action2, _t('Delete'), 'fa:trash red');
 
         $this->datagrid->createModel();
 

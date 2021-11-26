@@ -2,20 +2,17 @@
 
     use Adianti\Database\TRecord;
 
-    class Veiculo extends TRecord
+    class Animal extends TRecord
     {
-        const TABLENAME = 'veiculo';
+        const TABLENAME = 'animal';
         const PRIMARYKEY = 'id';
         const IDPOLUCY = 'max';
 
         public function __construct($id = NULL, $callObjectLoad = TRUE)
         {
           parent::__construct($id, $callObjectLoad);
-          parent::addAttribute('placa');
-          parent::addAttribute('marca');
-          parent::addAttribute('modelo');
-          parent::addAttribute('cor');
-          parent::addAttribute('ano_modelo');
+          parent::addAttribute('nome');
+          parent::addAttribute('observacao');
           parent::addAttribute('pessoa_id');
         }
 

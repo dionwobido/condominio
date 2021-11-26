@@ -12,10 +12,11 @@ use Adianti\Widget\Datagrid\TPageNavigation;
 use Adianti\Widget\Form\TEntry;
 use Adianti\Widget\Form\TLabel;
 use Adianti\Widget\Util\TDropDown;
+use Adianti\Widget\Wrapper\TDBUniqueSearch;
 use Adianti\Wrapper\BootstrapDatagridWrapper;
 use Adianti\Wrapper\BootstrapFormBuilder;
 
-class GrupoList extends TPage
+class AnimalList extends TPage
 {
     protected $form;
     protected $datagrid;
@@ -30,43 +31,62 @@ class GrupoList extends TPage
         parent::__construct();
 
         $this->setDatabase('db_condominio');
-        $this->setActiveRecord('Grupo');
+        $this->setActiveRecord('Animal');
         $this->setDefaultOrder('id', 'asc');
+        $this->setOrderCommand('pessoa->nome', '(SELECT nome FROM pessoa WHERE id=animal.pessoa_id)');
         $this->setLimit(10);
 
         $this->addFilterField('id', '=','id');
         $this->addFilterField('nome', 'like','nome');
+        $this->addFilterField('observacao', 'like','observacao');
         
-        $this->form = new BootstrapFormBuilder('form_search_Grupo');
-        $this->form->setFormTitle('Grupo');
+        $this->form = new BootstrapFormBuilder('form_search_Animal');
+        $this->form->setFormTitle('Animals');
 
         $id = new TEntry('id');
         $nome = new TEntry('nome');
+        $observacao = new TEntry('observacao');
+        $pessoa_id = new TDBUniqueSearch('pessoa_id', 'db_condominio', 'Pessoa', 'id', 'nome');
+        //$estado_id->setMinLength(0);
+        $pessoa_id->setMask('{nome}');
 
         $this->form->addFields([new TLabel('Id')], [$id]);
         $this->form->addFields([new TLabel('Nome')], [$nome]);
+        $this->form->addFields([new TLabel('Observação')], [$observacao]);
+        $this->form->addFields([new TLabel('Pessoa')], [$pessoa_id]);
 
         $this->form->setData(TSession::getValue(__CLASS__.'_filter_data_'));
 
         $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
-        $this->form->addActionLink(_t('New'), new TAction(['GrupoForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
+        $this->form->addActionLink(_t('New'), new TAction(['AnimalForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
 
         //Cria datagrid
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
         $this->datagrid->style = 'width 100%';
+        //$this->datagrid->datatable = 'true';
+        //$this->datagrid->enablePopover('Popover', '<b>{nome}<br>{estado->nome}<br>{estado->uf}');
 
         //cria as colunas
         $column_id = new TDataGridColumn('id', 'Id', 'center', '10%');
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
+        $column_observacao = new TDataGridColumn('observacao', 'Observação', 'left');
+        $column_pessoa_id = new TDataGridColumn('{pessoa->nome}', 'Pessoa', 'left');
 
+        $column_observacao->enableAutoHide(500);
+        $column_pessoa_id->enableAutoHide(500);
+        
         $this->datagrid->addColumn($column_id);
         $this->datagrid->addColumn($column_nome);
+        $this->datagrid->addColumn($column_observacao);
+        $this->datagrid->addColumn($column_pessoa_id);
 
         $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $column_nome->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
+        $column_observacao->setAction(new TAction([$this, 'onReload']), ['order' => 'observacao']);
+        $column_pessoa_id->setAction(new TAction([$this, 'onReload']), ['order' => 'pessoa->nome']);
 
-        $action1 = new TDataGridAction(['GrupoForm', 'onEdit'], ['id' =>'{id}', 'register_start' =>'false']);
+        $action1 = new TDataGridAction(['AnimalForm', 'onEdit'], ['id' =>'{id}', 'register_start' =>'false']);
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id' =>'{id}']);
 
         $this->datagrid->addAction($action1, _t('Edit'), 'fa:edit blue');
