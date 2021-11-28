@@ -13,11 +13,23 @@
       </menuitem>
       <menuitem label="Cadastro de Grupos">
         <action>GrupoList</action>
-        <icon>fas:adjust fa-fw #361bf2</icon>
+        <icon>fas:layer-group fa-fw #361bf2</icon>
       </menuitem>
       <menuitem label="Cadastro Papel">
         <action>PapelList</action>
         <icon>fas:adjust fa-fw #361bf2</icon>
+      </menuitem>
+      <menuitem label="Cadastro Pessoas">
+        <action>PessoaList</action>
+        <icon>fas:users fa-fw #361bf2</icon>
+      </menuitem>
+      <menuitem label="Cadastro Veiculos">
+        <action>VeiculoList</action>
+        <icon>fas:car fa-fw #361bf2</icon>
+      </menuitem>
+      <menuitem label="Cadastro Animais">
+        <action>AnimalList</action>
+        <icon>fas:dog fa-fw #361bf2</icon>
       </menuitem>
     </menu>
   </menuitem>
