@@ -57,8 +57,8 @@ class PessoaForm extends TWindow
         $filter = new TCriteria;
         $filter->add(new TFilter('id', '<', '0'));
         $cidade_id = new TDBCombo('cidade_id', 'db_condominio', 'Cidade', 'id', 'nome', 'nome', $filter);
-        $grupo_id = new TDBUniqueSearch('grupo_id', 'db_condominio', 'Grupo', 'id', 'nome');//TDBUniqueSearch   TDBMultiSearch
-        $papeis_id = new TDBUniqueSearch('papeis_id', 'db_condominio', 'Papel', 'id', 'nome');//TDBUniqueSearch   TDBMultiSearch
+        $grupo_id = new TDBUniqueSearch('grupo_id', 'db_condominio', 'Grupo', 'id', 'nome');//TDBMultiSearch   TDBUniqueSearch
+        $papeis_id = new TDBUniqueSearch('papeis_id', 'db_condominio', 'Papel', 'id', 'nome');//TDBMultiSearch   TDBUniqueSearch
         $estado_id = new TDBCombo('estado_id', 'db_condominio', 'Estado', 'id', '{nome} {uf}');
 
         $estado_id->setChangeAction(new TAction([$this, 'onChangeEstado']));
@@ -158,7 +158,7 @@ class PessoaForm extends TWindow
             {
                 foreach ($data->papeis_id as $papel_id)
                 {
-                    $pp = new PessoalPapel;
+                    $pp = new PessoaPapel;
                     $pp->pessoa_id = $object->id;
                     $pp->papel_id = $papel_id;
                     $pp->store();
@@ -187,7 +187,8 @@ class PessoaForm extends TWindow
 
     public function onEdit($param)
     {
-        try{
+        try
+        {
             if (isset($param['key']))
             {
                 $key = $param['key'];
@@ -198,7 +199,7 @@ class PessoaForm extends TWindow
                 $this->form->setData($object);
 
                 $data = new stdClass;
-                $data->estado_id = $object->cidade->estado_id;
+                $data->estado_id = $object->cidade->estado->id;
                 $data->cidade_id = $object->cidade_id;
                 TForm::sendData('form_Pessoa', $data);
 
@@ -261,7 +262,7 @@ class PessoaForm extends TWindow
                 {
                     $data->tipo = 'J';
                     $data->nome = $cnpj_data->nome;
-                    $data->nome_fantasia = !empty($cnpj_data->fantasia) ? $cnpj_data->fantasia : $cnpj_data->mome;
+                    $data->nome_fantasia = !empty($cnpj_data->fantasia) ? $cnpj_data->fantasia : $cnpj_data->nome;
 
                     if (!empty($param['cep']))
                     {

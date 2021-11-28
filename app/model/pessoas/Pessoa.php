@@ -8,6 +8,9 @@ use Adianti\Database\TRecord;
         const PRIMARYKEY = 'id';
         const IDPOLUCY = 'max';
 
+        const CREATEDATA = 'created_at';
+        const UPDATEDAT = 'updated_at';
+
         public function __construct($id = NULL, $callObjectLoad = TRUE)
         {
           parent::__construct($id, $callObjectLoad);

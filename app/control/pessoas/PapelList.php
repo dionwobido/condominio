@@ -31,24 +31,24 @@ class PapelList extends TPage
 
         $this->setDatabase('db_condominio');
         $this->setActiveRecord('Papel');
-        $this->setDefaultOrder('id', 'asc');
+        $this-> setDefaultOrder('id', 'asc');
         $this->setLimit(10);
 
-        $this->addFilterField('id', '=','id');
-        $this->addFilterField('nome', 'like','nome');
-        
+        $this->addFilterField('id', '=', 'id');
+        $this->addFilterField('nome', 'like', 'nome');
+
         $this->form = new BootstrapFormBuilder('form_search_Papel');
         $this->form->setFormTitle('Papel');
 
         $id = new TEntry('id');
         $nome = new TEntry('nome');
 
-        $this->form->addFields([new TLabel('Id')], [$id]);
-        $this->form->addFields([new TLabel('Nome')], [$nome]);
+        $this->form->addFields([ new TLabel('Id') ], [ $id]);
+        $this->form->addFields([ new TLabel('Nome') ], [ $nome]);
 
-        $this->form->setData(TSession::getValue(__CLASS__.'_filter_data_'));
+        $this->form->setData( TSession::getValue(__CLASS__.'_filter_data_') );
 
-        $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
+        $btn = $this->form->addAction(_t('Find'), new TAction([ $this, 'onSearch']), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
         $this->form->addActionLink(_t('New'), new TAction(['PapelForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
 
@@ -56,7 +56,7 @@ class PapelList extends TPage
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
         $this->datagrid->style = 'width 100%';
 
-        //cria as colunas
+        //Criar as colunas
         $column_id = new TDataGridColumn('id', 'Id', 'center', '10%');
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
 
@@ -66,8 +66,8 @@ class PapelList extends TPage
         $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $column_nome->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
 
-        $action1 = new TDataGridAction(['PapelForm', 'onEdit'], ['id' =>'{id}', 'register_start' =>'false']);
-        $action2 = new TDataGridAction([$this, 'onDelete'], ['id' =>'{id}']);
+        $action1 = new TDataGridAction(['PapelForm', 'onEdit'], ['id' => '{id}', 'register_state' => 'false']);
+        $action2 = new TDataGridAction([$this, 'onDelete'], ['id' => '{id}']);
 
         $this->datagrid->addAction($action1, _t('Edit'), 'fa:edit blue');
         $this->datagrid->addAction($action2, _t('Delete'), 'fa:trash red');
@@ -75,7 +75,7 @@ class PapelList extends TPage
         $this->datagrid->createModel();
 
         $this->pageNavigation = new TPageNavigation;
-        $this->pageNavigation->setAction(new TAction([$this, 'onReload']) );
+        $this->pageNavigation->setAction(new TAction([$this, 'onReload']));
 
         $panel = new TPanelGroup('', 'white');
         $panel->add($this->datagrid);
@@ -85,15 +85,14 @@ class PapelList extends TPage
         $dropdown->setPullSide('right');
         $dropdown->setButtonClass('btn btn-default waves-effect dropdown-toggle');
         $dropdown->addAction(_t('Save as CSV'), new TAction([$this, 'onExportCSV'], ['register_state' => 'false', 'static' => '1']), 'fa:table blue');
-        $dropdown->addAction(_t('Save as PDF'), new TAction([$this, 'onExportPDF'], ['register_state' => 'false', 'static' => '1']), 'fa:file-pdf red');
+        $dropdown->addAction(_t('Save as PDF'), new TAction([$this, 'onExportPDF'], ['register_state' => 'false', 'static' => '1']), 'far:file-pdf red');
         $panel->addHeaderWidget($dropdown);
-        
+
         $container = new TVBox;
         $container->style = 'width: 100%';
         $container->add($this->form);
         $container->add($panel);
 
         parent::add($container);
-
-        }
+    }
 }
