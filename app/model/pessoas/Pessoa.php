@@ -37,7 +37,6 @@ use Adianti\Database\TRecord;
         public function get_cidade()
         {
             return Cidade::find($this->cidade_id);
-
         }
         
         public function get_grupo()

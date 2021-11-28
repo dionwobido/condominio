@@ -89,7 +89,7 @@ class PessoaFormView extends TPage
         {
             new TMessage('error', $e->getMessage());
         }
-
+        
     }
 
     //Imprimi a view
@@ -179,5 +179,4 @@ class PessoaFormView extends TPage
     {
         TScript::create("Template.closeRightPanel()");
     }
-    
 }
