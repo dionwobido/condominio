@@ -69,8 +69,8 @@ class GrupoList extends TPage
         $action1 = new TDataGridAction(['GrupoForm', 'onEdit'], ['id' =>'{id}', 'register_start' =>'false']);
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id' =>'{id}']);
 
-        $this->datagrid->addAction($action1, _t('Edit'), 'fa:edit blue');
-        $this->datagrid->addAction($action2, _t('Delete'), 'fa:trash red');
+        $this->datagrid->addAction($action1, _t('Edit'), 'far:edit blue');
+        $this->datagrid->addAction($action2, _t('Delete'), 'far:trash-alt red');
 
         $this->datagrid->createModel();
 
