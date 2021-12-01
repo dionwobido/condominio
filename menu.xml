@@ -31,6 +31,10 @@
         <action>AnimalList</action>
         <icon>fas:dog fa-fw #361bf2</icon>
       </menuitem>
+      <menuitem label="Cadastro Eleição">
+        <action>EleicaoList</action>
+        <icon>fas:layer-group fa-fw #361bf2</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">
