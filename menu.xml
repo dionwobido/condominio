@@ -35,6 +35,10 @@
         <action>EleicaoList</action>
         <icon>fas:layer-group fa-fw #361bf2</icon>
       </menuitem>
+      <menuitem label="Cadastro Unidade">
+        <action>UnidadeList</action>
+        <icon>fas:home fa-fw #361bf2</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">
