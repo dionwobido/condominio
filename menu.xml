@@ -44,7 +44,7 @@
   <menuitem label="Agenda">
     <icon>fas:book fa-fw #6bbfed</icon>
     <menu>
-      <menuitem label="Agenda">
+      <menuitem label="Calendario">
         <action>CalendarioView</action>
         <icon>fas:book fa-fw #6bbfed</icon>
       </menuitem>

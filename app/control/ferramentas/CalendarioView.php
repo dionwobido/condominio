@@ -1,12 +1,14 @@
 <?php
-
-use Adianti\Control\TAction;
-use Adianti\Control\TPage;
-use Adianti\Database\TTransaction;
-use Adianti\Registry\TSession;
-use Adianti\Widget\Dialog\TMessage;
-use Adianti\Widget\Util\TFullCalendar;
-
+/**
+ * CalendarioView
+ *
+ * @version    1.0
+ * @package    erphouse
+ * @subpackage control
+ * @author     Pablo Dall'Oglio
+ * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
+ * @license    http://www.adianti.com.br/framework-license
+ */
 class CalendarioView extends TPage
 {
     private $fc;
@@ -38,7 +40,7 @@ class CalendarioView extends TPage
         $return = array();
         try
         {
-            TTransaction::open('db_gloria');
+            TTransaction::open('db_condominio');
             
             $events = Evento::where('inicio', '>=', $param['start'])
                             ->where('fim',   '<=', $param['end'])

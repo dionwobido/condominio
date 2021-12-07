@@ -1,22 +1,14 @@
 <?php
-
-use Adianti\Control\TAction;
-use Adianti\Control\TPage;
-use Adianti\Core\AdiantiCoreTranslator;
-use Adianti\Database\TTransaction;
-use Adianti\Registry\TSession;
-use Adianti\Widget\Base\TScript;
-use Adianti\Widget\Dialog\TMessage;
-use Adianti\Widget\Dialog\TQuestion;
-use Adianti\Widget\Form\TColor;
-use Adianti\Widget\Form\TCombo;
-use Adianti\Widget\Form\TDate;
-use Adianti\Widget\Form\TEntry;
-use Adianti\Widget\Form\THidden;
-use Adianti\Widget\Form\TLabel;
-use Adianti\Widget\Form\TText;
-use Adianti\Wrapper\BootstrapFormBuilder;
-
+/**
+ * CalendarForm
+ *
+ * @version    1.0
+ * @package    erphouse
+ * @subpackage control
+ * @author     Pablo Dall'Oglio
+ * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
+ * @license    http://www.adianti.com.br/framework-license
+ */
 class CalendarioForm extends TPage
 {
     protected $form; // form
@@ -233,7 +225,7 @@ class CalendarioForm extends TPage
                 // get the parameter $key
                 $key = $param['key'];
                 
-                // open a transaction with database 'erphouse'
+                // open a transaction with database 'db_gloria'
                 TTransaction::open('db_condominio');
                 
                 $object = new Evento($key);
@@ -282,12 +274,10 @@ class CalendarioForm extends TPage
      */
     public static function onDelete($param)
     {
-        // define the delete action
         $action = new TAction(array('CalendarioForm', 'Delete'));
-        $action->setParameters($param); // pass the key parameter ahead
-        
-        // shows a dialog to the user
-        new TQuestion(AdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+        $action->setParameters($param);
+
+        new TQuestion(AdiantiCoreTranslator::translate('Do you really want to delete?'), $action);
     }
     
     /**
@@ -371,7 +361,7 @@ class CalendarioForm extends TPage
                 // get the parameter $key
                 $key=$param['id'];
                 
-                // open a transaction with database 'erphouse'
+                // open a transaction with database 'db_gloria'
                 TTransaction::open('db_condominio');
                 
                 $object = new Evento($key);
