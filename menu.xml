@@ -41,6 +41,15 @@
       </menuitem>
     </menu>
   </menuitem>
+  <menuitem label="Agenda">
+    <icon>fas:book fa-fw #6bbfed</icon>
+    <menu>
+      <menuitem label="Agenda">
+        <action>CalendarioView</action>
+        <icon>fas:book fa-fw #6bbfed</icon>
+      </menuitem>
+    </menu>
+  </menuitem>
   <menuitem label="_t{Administration}">
     <icon>fas:home fa-fw</icon>
     <menu>
