@@ -50,6 +50,15 @@
       </menuitem>
     </menu>
   </menuitem>
+  <menuitem label="Financeiro">
+    <icon>fas:money-bill-wave fa-fw #00a9ff</icon>
+    <menu>
+      <menuitem label="Categoria Contas">
+        <action>ContaList</action>
+        <icon>far:money-bill-alt fa-fw #00a9ff</icon>
+      </menuitem>
+    </menu>
+  </menuitem>
   <menuitem label="_t{Administration}">
     <icon>fas:home fa-fw</icon>
     <menu>
