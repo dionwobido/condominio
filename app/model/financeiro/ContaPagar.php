@@ -34,5 +34,4 @@
         {
             return Pessoa::find($this->pessoa_id);
         }
-        
     } 
