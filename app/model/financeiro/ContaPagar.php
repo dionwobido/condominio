@@ -4,7 +4,7 @@
 
     class ContaPagar extends TRecord
     {
-        const TABLENAME = 'ContaPagar';
+        const TABLENAME = 'conta_pagar';
         const PRIMARYKEY = 'id';
         const IDPOLUCY = 'max';
 
@@ -21,8 +21,6 @@
           parent::addAttribute('pessoa_id');
           parent::addAttribute('saldo');
           parent::addAttribute('status');
-
-
         }
 
         public function get_conta()

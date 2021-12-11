@@ -42,11 +42,11 @@
     </menu>
   </menuitem>
   <menuitem label="Agenda">
-    <icon>fas:book fa-fw #6bbfed</icon>
+    <icon>fas:table fa-fw #6bbfed</icon>
     <menu>
       <menuitem label="Calendario">
         <action>CalendarioView</action>
-        <icon>fas:book fa-fw #6bbfed</icon>
+        <icon>fas:table fa-fw #6bbfed</icon>
       </menuitem>
     </menu>
   </menuitem>
@@ -55,6 +55,10 @@
     <menu>
       <menuitem label="Categoria Contas">
         <action>ContaList</action>
+        <icon>far:money-bill-alt fa-fw #00a9ff</icon>
+      </menuitem>
+      <menuitem label="Contas a Pagar">
+        <action>ContaPagarList</action>
         <icon>far:money-bill-alt fa-fw #00a9ff</icon>
       </menuitem>
     </menu>

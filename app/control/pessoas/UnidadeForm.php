@@ -67,6 +67,9 @@ class UnidadeForm extends TPage
         $descricao->addValidation('Descrição', new TRequiredValidator);
 
         $descricao->forceUpperCase();
+        $fracao->setNumericMask(8, ',', '.', true);
+        $area_util->setNumericMask(2, ',', '.', true);
+        $area_total->setNumericMask(2, ',', '.', true);
 
         $id->setSize('100%');
         $descricao->setSize('100%');
@@ -99,27 +102,4 @@ class UnidadeForm extends TPage
     {
         TScript::create("Template.closeRightPanel()");
     }
-
-    //public static function onExitProduct($param)
-    // {
-    //     $fracao = $param['fracao'];
-    //    $area_util = $param['area_util'];
-    //    $area_total = $param['area_total'];
-    //    try
-    //    {
-    //        TTransaction::open('db_condominio');
-    //        $objeto_format = new Unidade($area_util); // reads the product
-    //        
-    //        $obj = new StdClass;
-    //        $obj->area_util  = number_format($objeto_format->area_util, 2, ',', '.');
-    //        $obj->area_total       = number_format($objeto_format->area_total, 2, ',', '.');
-    //        TTransaction::close();
-    //        TForm::sendData('form_unidade', $obj);
-    //    }
-    //    catch (Exception $e)
-    //    {
-            // does nothing
-    //    }
-    //}
-
 }

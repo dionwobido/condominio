@@ -17,7 +17,7 @@ use Adianti\Widget\Wrapper\TDBUniqueSearch;
 use Adianti\Wrapper\BootstrapDatagridWrapper;
 use Adianti\Wrapper\BootstrapFormBuilder;
 
-class UnidadeList extends TPage
+class ContaPagarList extends TPage
 {
     protected $form;
     protected $datagrid;
@@ -32,48 +32,41 @@ class UnidadeList extends TPage
         parent::__construct();
 
         $this->setDatabase('db_condominio');
-        $this->setActiveRecord('Unidade');
+        $this->setActiveRecord('ContaPagar');
         $this->setDefaultOrder('id', 'asc');
-        $this->setOrderCommand('pessoa->nome', '(SELECT nome FROM pessoa WHERE id=unidade.pessoa_id)');
+        $this->setOrderCommand('pessoa->nome', '(SELECT nome FROM pessoa WHERE id=conta_pagar.pessoa_id)');
         $this->setLimit(10);
 
         $this->addFilterField('id', '=','id');
-        $this->addFilterField('descricao', 'like','descricao');
-        $this->addFilterField('grupo_id', '=','grupo_id');
+        $this->addFilterField('conta_id', '=','conta_id');
         $this->addFilterField('pessoa_id', '=','pessoa_id');
-        $this->addFilterField('papel_id', '=','papel_id');
+        $this->addFilterField('status', 'like','status');
         
-        $this->form = new BootstrapFormBuilder('form_search_Unidade');
-        $this->form->setFormTitle('Unidade');
+        $this->form = new BootstrapFormBuilder('form_search_ContaPagar');
+        $this->form->setFormTitle('Contas a Pagar');
 
         $id = new TEntry('id');
-        $descricao = new TEntry('descricao');
-        $grupo_id = new TDBUniqueSearch('grupo_id', 'db_condominio', 'Grupo', 'id', 'grupo->nome');
-        $bloco = new TEntry('bloco');
-        $pessoa_id = new TDBUniqueSearch('pessoa_id', 'db_condominio', 'Pessoa', 'id', 'pessoa->nome');
-        $pessoa_id->setMinLength(0);
-        $papel_id = new TDBUniqueSearch('papel_id', 'db_condominio', 'Papel', 'id', 'papel->nome');
+        $conta_id = new TDBUniqueSearch('conta_id', 'db_condominio', 'Conta', 'id', 'descricao');
+        $conta_id->setMinLength(0);
+        $conta_id->setMask('{descricao}');
+        $pessoa_id = new TDBUniqueSearch('pessoa_id', 'db_condominio', 'Pessoa', 'id', 'nome');
+        $status = new TEntry('status');
 
         $this->form->addFields([new TLabel('Id')], [$id]);
-        $this->form->addFields([new TLabel('Descricao')], [$descricao]);
-        $this->form->addFields([new TLabel('Grupo')], [$grupo_id]);
-        $this->form->addFields([new TLabel('Bloco')], [$bloco]);
+        $this->form->addFields([new TLabel('Conta')], [$conta_id]);
         $this->form->addFields([new TLabel('Pessoa')], [$pessoa_id]);
-        $this->form->addFields([new TLabel('Papel')], [$papel_id]);
+        $this->form->addFields([new TLabel('Status')], [$status]);
 
         $id->setSize('100%');
-        $descricao->setSize('100%');
-        $grupo_id->setSize('100%');
-        $bloco->setSize('100%');
+        $conta_id->setSize('100%');
         $pessoa_id->setSize('100%');
-        $pessoa_id->setSize('100%');
-        $papel_id->setSize('100%');
+        $status->setSize('100%');
 
         $this->form->setData(TSession::getValue(__CLASS__.'_filter_data_'));
 
         $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
-        $this->form->addActionLink(_t('New'), new TAction(['UnidadeForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
+        $this->form->addActionLink(_t('New'), new TAction(['ContaPagarForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
 
         //Cria datagrid
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
@@ -81,30 +74,33 @@ class UnidadeList extends TPage
 
         //cria as colunas
         $column_id = new TDataGridColumn('id', 'Id', 'center', '10%');
-        $column_descricao = new TDataGridColumn('descricao', 'Descrição', 'left');
-        $column_grupo_id = new TDataGridColumn('{grupo->nome}', 'Grupo', 'left');
-        $column_bloco = new TDataGridColumn('bloco', 'Bloco', 'left');
-        $column_pessoa_id = new TDataGridColumn('{pessoa->nome}', 'Pessoa', 'left');
-        $column_papel_id = new TDataGridColumn('{papel->nome}', 'Papel', 'left');
-        $column_fracao = new TDataGridColumn('fracao', 'Fração', 'left');
-        $column_area_util = new TDataGridColumn('area_util', 'Área Útil', 'left',);
-        $column_area_total = new TDataGridColumn('area_total', 'Área Total', 'left',);
-        $column_observacao = new TDataGridColumn('observacao', 'Observação', 'left');
+        $column_conta_id = new TDataGridColumn('conta->descricao', 'Conta', 'left');
+        $column_rateio = new TDataGridColumn('rateio', 'Rateio', 'left');
+        $column_valor = new TDataGridColumn('valor', 'Valor', 'left');
+        $column_data_vencimento = new TDataGridColumn('data_vencimento', 'Data Vencimento', 'left');
+        $column_data_pagamento = new TDataGridColumn('data_pagamento', 'Data Pagamento', 'left');
+        $column_valor_pago = new TDataGridColumn('valor_pago', 'Valor Pago', 'left');
+        $column_observacao = new TDataGridColumn('observacao', 'Observação', 'left',);
+        $column_pessoa_id = new TDataGridColumn('{pessoa->nome}', 'Pessoa', 'left',);
+        $column_saldo = new TDataGridColumn('saldo', 'Saldo', 'left');
+        $column_status = new TDataGridColumn('status', 'Status', 'left');
         
-        $column_grupo_id->enableAutoHide(500);
+        $column_conta_id->enableAutoHide(500);
         $column_pessoa_id->enableAutoHide(500);
-        $column_papel_id->enableAutoHide(500);
-
+        
         $this->datagrid->addColumn($column_id);
-        $this->datagrid->addColumn($column_descricao);
-        $this->datagrid->addColumn($column_grupo_id);
-        $this->datagrid->addColumn($column_bloco);
-        $this->datagrid->addColumn($column_pessoa_id);
-        $this->datagrid->addColumn($column_papel_id);
-        $this->datagrid->addColumn($column_fracao);
-        $this->datagrid->addColumn($column_area_util);
-        $this->datagrid->addColumn($column_area_total);
+        $this->datagrid->addColumn($column_conta_id);
+        $this->datagrid->addColumn($column_rateio);
+        $this->datagrid->addColumn($column_valor);
+        $this->datagrid->addColumn($column_data_vencimento);
+        $this->datagrid->addColumn($column_data_pagamento);
+        $this->datagrid->addColumn($column_valor_pago);
         $this->datagrid->addColumn($column_observacao);
+        $this->datagrid->addColumn($column_pessoa_id);
+        $this->datagrid->addColumn($column_saldo);
+        $this->datagrid->addColumn($column_status);
+
+        //$column_valor->setNumericMask(2, ',', '.', true);
 
         $format_value = function($value){
             if (is_numeric($value)){
@@ -113,24 +109,25 @@ class UnidadeList extends TPage
             return $value;
         };
 
-        $column_area_util->setTransformer($format_value);
-        $column_area_total->setTransformer($format_value);
-
-        $format_value_fracao = function($value_fracao){
-            if (is_numeric($value_fracao)){
-                return number_format($value_fracao, 8, ',', '.');
-            }
-            return $value_fracao;
-        };
-        $column_fracao->setTransformer($format_value_fracao);
+        $column_valor->setTransformer($format_value);
+        $column_valor_pago->setTransformer($format_value);
 
         $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $column_pessoa_id->setAction(new TAction([$this, 'onReload']), ['order' => 'pessoa->nome']);
-        $column_papel_id->setAction(new TAction([$this, 'onReload']), ['order' => 'papel->nome']);
+        $column_conta_id->setAction(new TAction([$this, 'onReload']), ['order' => 'conta->descricao']);
 
-        $action1 = new TDataGridAction(['UnidadeForm', 'onEdit'], ['id' =>'{id}', 'register_start' =>'false']);
+        $action1 = new TDataGridAction(['ContaPagarForm', 'onEdit'], ['id' =>'{id}', 'register_start' =>'false']);
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id' =>'{id}']);
-        
+
+        //Converte data inicio no datagrid
+        $column_data_vencimento->setTransformer(function($value){
+            return TDate::convertToMask($value, 'yyyy-mm-dd', 'dd/mm/yyyy');
+        });
+
+        $column_data_pagamento->setTransformer(function($value){
+            return TDate::convertToMask($value, 'yyyy-mm-dd', 'dd/mm/yyyy');
+        });
+
         $this->datagrid->addAction($action1, _t('Edit'), 'far:edit blue');
         $this->datagrid->addAction($action2, _t('Delete'), 'far:trash-alt red');
 
@@ -156,6 +153,5 @@ class UnidadeList extends TPage
         $container->add($panel);
 
         parent::add($container);
-
-        }
+    }    
 }
