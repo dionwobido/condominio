@@ -61,6 +61,10 @@
         <action>ContaPagarList</action>
         <icon>far:money-bill-alt fa-fw #00a9ff</icon>
       </menuitem>
+      <menuitem label="Conta a Receber">
+        <action>ContaReceberList</action>
+        <icon>fas:money-bill-alt fa-fw #00a9ff</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">
