@@ -93,6 +93,47 @@ class EleicaoList extends TPage
         $this->datagrid->addColumn($column_data_fim);
         $this->datagrid->addColumn($column_observacao);
 
+        $column_papel_id->setTransformer(function($value, $object, $row) { 
+            $lbl = new TLabel(''); 
+            if ($value == 'Proprietário(a)') { 
+                $lbl->setValue('Proprietário(a)'); 
+                $lbl->class = 'label label-primary'; 
+            } 
+            elseif ($value == 'Inquilino(a)') { 
+                $lbl->setValue('Inquilino(a)'); 
+                $lbl->class = 'label label-secondary'; 
+            }  
+            elseif ($value == 'Sindico(a)') { 
+                $lbl->setValue('Sindico(a)'); 
+                $lbl->class = 'label label-success'; 
+            }
+            elseif ($value == 'Conselho Fiscal') { 
+                $lbl->setValue('Conselho Fiscal'); 
+                $lbl->class = 'label label-danger'; 
+            }
+            elseif ($value == 'Brigada de Incêncio') { 
+                $lbl->setValue('Brigada de Incêncio'); 
+                $lbl->class = 'label label-warning'; 
+            }
+            elseif ($value == 'Fornecedor') { 
+                $lbl->setValue('Fornecedor'); 
+                $lbl->class = 'label label-info'; 
+            }
+            elseif ($value == 'Funcionário(a) Particular') { 
+                $lbl->setValue('Funcionário(a) Particular'); 
+                $lbl->class = 'label label-light'; 
+            }
+            elseif ($value == 'Funcionário(a) Tercerizado') { 
+                $lbl->setValue('Funcionário(a) Tercerizado'); 
+                $lbl->class = 'label label-dark'; 
+            }
+            elseif ($value == 'Empresa Tercerizado') { 
+                $lbl->setValue('Empresa Tercerizado'); 
+                $lbl->class = 'label label-dark'; 
+            }
+            return $lbl; 
+            });
+
         $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $column_pessoa_id->setAction(new TAction([$this, 'onReload']), ['order' => 'pessoa->nome']);
         $column_papel_id->setAction(new TAction([$this, 'onReload']), ['order' => 'papel->nome']);

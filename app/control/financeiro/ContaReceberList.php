@@ -120,6 +120,24 @@ class ContaReceberList extends TPage
         $this->datagrid->addColumn($column_status);
         $this->datagrid->addColumn($column_observacao);
 
+        //para deixar colorido as palavras do status
+        $column_status->setTransformer(function($value, $object, $row) { 
+            $lbl = new TLabel(''); 
+            if ($value == 'Liquidado') { 
+                $lbl->setValue('Liquidado'); 
+                $lbl->class = 'label label-success'; 
+            } 
+            elseif ($value == 'Pendente') { 
+                $lbl->setValue('Pendente'); 
+                $lbl->class = 'label label-danger'; 
+            }  
+            elseif ($value == 'Parcelado') { 
+                $lbl->setValue('Parcelado'); 
+                $lbl->class = 'label label-warning'; 
+            }  
+            return $lbl; 
+            });
+
         //$column_valor->setNumericMask(2, ',', '.', true);
 
         $format_value = function($value){

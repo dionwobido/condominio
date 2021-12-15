@@ -100,6 +100,24 @@ class ContaPagarList extends TPage
         $this->datagrid->addColumn($column_saldo);
         $this->datagrid->addColumn($column_status);
 
+        //para deixar colorido as palavras do status
+        $column_status->setTransformer(function($value, $object, $row) { 
+            $lbl = new TLabel(''); 
+            if ($value == 'Liquidado') { 
+                $lbl->setValue('Liquidado'); 
+                $lbl->class = 'label label-success'; 
+            } 
+            elseif ($value == 'Pendente') { 
+                $lbl->setValue('Pendente'); 
+                $lbl->class = 'label label-danger'; 
+            }  
+            elseif ($value == 'Parcelado') { 
+                $lbl->setValue('Parcelado'); 
+                $lbl->class = 'label label-warning'; 
+            }  
+            return $lbl; 
+            });
+
         //$column_valor->setNumericMask(2, ',', '.', true);
 
         $format_value = function($value){
@@ -111,6 +129,7 @@ class ContaPagarList extends TPage
 
         $column_valor->setTransformer($format_value);
         $column_valor_pago->setTransformer($format_value);
+        $column_saldo->setTransformer($format_value);
 
         $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $column_pessoa_id->setAction(new TAction([$this, 'onReload']), ['order' => 'pessoa->nome']);

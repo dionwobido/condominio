@@ -36,6 +36,7 @@ class PessoaList extends TPage
         $this->addFilterField('fone', 'like', 'fone');
         $this->addFilterField('email', 'like', 'email');
         $this->addFilterField('grupo_id', '=', 'grupo_id');
+        $this->addFilterField('papel_id', '=', 'papel_id');
 
         //Criar os forms
         $this->form = new BootstrapFormBuilder('form_search_Pessoa');
@@ -45,7 +46,7 @@ class PessoaList extends TPage
         $nome_fantasia = new TEntry('nome_fantasia');
         $fone = new TEntry('fone');
         $email = new TEntry('email');
-        $grupo_id = new TDBUniqueSearch('grupo_id', 'db_condominio', 'Grupo', 'id', 'nome');
+        $grupo_id = new TDBUniqueSearch('{grupo->nome}', 'db_condominio', 'Grupo', 'id', 'nome');
         $grupo_id->setMinLength(0);
 
         $this->form->addFields( [ new TLabel('Id') ], [ $id ]);
@@ -75,13 +76,47 @@ class PessoaList extends TPage
         $column_nome_fantasia = new TDataGridColumn('nome_fantasia', 'Nome Fantasia', 'left');
         $column_fone = new TDataGridColumn('fone', 'Fone', 'left');
         $column_email = new TDataGridColumn('email', 'Email', 'left');
-        $column_grupo_id = new TDataGridColumn('grupo_id', 'Grupo', 'left');
+        $column_grupo_id = new TDataGridColumn('{grupo->nome}', 'Grupo', 'left');
 
         $this->datagrid->addColumn($column_id);
         $this->datagrid->addColumn($column_nome_fantasia);
         $this->datagrid->addColumn($column_fone);
         $this->datagrid->addColumn($column_email);
         $this->datagrid->addColumn($column_grupo_id);
+
+        //para deixar colorido as palavras do grupo_id
+        $column_grupo_id->setTransformer(function($value, $object, $row) { 
+            $lbl = new TLabel(''); 
+            if ($value == 'Apartamentos') { 
+                $lbl->setValue('Apartamentos'); 
+                $lbl->class = 'label label-primary'; 
+            } 
+            elseif ($value == 'Deposito') { 
+                $lbl->setValue('Deposito'); 
+                $lbl->class = 'label label-secondary'; 
+            }  
+            elseif ($value == 'Funcionário Particular') { 
+                $lbl->setValue('Funcionário Particular'); 
+                $lbl->class = 'label label-success'; 
+            }
+            elseif ($value == 'Funcionário Tercerizado') { 
+                $lbl->setValue('Funcionário Tercerizado'); 
+                $lbl->class = 'label label-danger'; 
+            }
+            elseif ($value == 'Garagem') { 
+                $lbl->setValue('Garagem'); 
+                $lbl->class = 'label label-danger'; 
+            }
+            elseif ($value == 'Lojas') { 
+                $lbl->setValue('Lojas'); 
+                $lbl->class = 'label label-info'; 
+            }
+            elseif ($value == 'Sala Comercial') { 
+                $lbl->setValue('Sala Comercial'); 
+                $lbl->class = 'label label-warning'; 
+            }
+            return $lbl; 
+            });
 
         $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $column_nome_fantasia->setAction(new TAction([$this, 'onReload']), ['order' => 'nome_fantasia']);
