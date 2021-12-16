@@ -65,6 +65,7 @@ class ContaPagarForm extends TPage
         // set exit action for input_exit
         $exit_action = new TAction(array($this, 'onExitAction'));
         $valor->setExitAction($exit_action);
+        $data_pagamento->setExitAction($exit_action);
 
         $data_vencimento->setMask('dd/mm/yyyy');
         $data_vencimento->setDatabaseMask('yyyy-mm-dd');
@@ -115,20 +116,30 @@ class ContaPagarForm extends TPage
     {   
         $valor = (double) str_replace(['.', ','], ['', '.'], $param['valor']);
         $data_vencimento = $param['data_vencimento'];
-        $data_pagamento = $param['data_pagamento'];            
-         
+        $data_pagamento = $param['data_pagamento'];   
+        
         $object = new StdClass;
+        if ($data_pagamento > $data_vencimento)
+        {
+            //$object = new StdClass;
+            $data_pagamento = new DateTime(TDate::date2us($data_pagamento));
+            $data_vencimento = new DateTime(TDate::date2us($data_vencimento));
+            $tempo = $data_pagamento->diff($data_vencimento);
+            $meses = $tempo->y * 12 + $tempo->m;
+        
+            $object->saldo = ($valor * pow(1+1/100, $meses) - $valor)+($valor * 0.02);
+            $object->saldo = number_format($object->saldo, 2, ',', '.');        
+            $object->valor_pago = $valor + $object->saldo;
+            $object->valor_pago = number_format($object->valor_pago, 2, ',', '.');
+        }
+        else{
 
-        $data_pagamento = new DateTime(TDate::date2us($data_pagamento));
-        $data_vencimento = new DateTime(TDate::date2us($data_vencimento));
-        $tempo = $data_pagamento->diff($data_vencimento);
-        $meses = $tempo->y * 12 + $tempo->m;
-        
-        $object->saldo = ($valor * pow(1+1/100, $meses) - $valor)+($valor * 0.02);
-        $object->saldo = number_format($object->saldo, 2, ',', '.');        
-        $object->valor_pago = $valor + $object->saldo;
-        $object->valor_pago = number_format($object->valor_pago, 2, ',', '.'); 
-        
+            $object->valor_pago = $object->valor;
+            $object->saldo = NULL;
+        }
+
+
+         
         TForm::sendData('form_ContaPagar', $object);
     }
     

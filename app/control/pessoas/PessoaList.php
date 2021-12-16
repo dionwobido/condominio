@@ -46,7 +46,7 @@ class PessoaList extends TPage
         $nome_fantasia = new TEntry('nome_fantasia');
         $fone = new TEntry('fone');
         $email = new TEntry('email');
-        $grupo_id = new TDBUniqueSearch('{grupo->nome}', 'db_condominio', 'Grupo', 'id', 'nome');
+        $grupo_id = new TDBUniqueSearch('grupo_id', 'db_condominio', 'Grupo', 'id', 'nome');
         $grupo_id->setMinLength(0);
 
         $this->form->addFields( [ new TLabel('Id') ], [ $id ]);
