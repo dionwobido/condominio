@@ -4,6 +4,7 @@ use Adianti\Control\TAction;
 use Adianti\Control\TPage;
 use Adianti\Validator\TRequiredValidator;
 use Adianti\Widget\Container\TVBox;
+use Adianti\Widget\Form\TCombo;
 use Adianti\Widget\Form\TDate;
 use Adianti\Widget\Form\TEntry;
 use Adianti\Widget\Form\TLabel;
@@ -64,7 +65,7 @@ class ContaPagarForm extends TPage
 
         // set exit action for input_exit
         $exit_action = new TAction(array($this, 'onExitAction'));
-        $valor->setExitAction($exit_action);
+        //$valor->setExitAction($exit_action);
         $data_pagamento->setExitAction($exit_action);
 
         $data_vencimento->setMask('dd/mm/yyyy');
@@ -76,8 +77,8 @@ class ContaPagarForm extends TPage
         $valor_pago->setEditable(FALSE);
 
         $valor->setNumericMask(2, ',', '.', true);
-        $valor_pago->setNumericMask(2, ',', '.', true);
-        $saldo->setNumericMask(2, ',', '.', true);
+        //$valor_pago->setNumericMask(2, ',', '.', true);
+        //$saldo->setNumericMask(2, ',', '.', true);
 
         $pessoa_id->addValidation('Pessoa', new TRequiredValidator);
         $conta_id->addValidation('Conta', new TRequiredValidator);
@@ -116,30 +117,30 @@ class ContaPagarForm extends TPage
     {   
         $valor = (double) str_replace(['.', ','], ['', '.'], $param['valor']);
         $data_vencimento = $param['data_vencimento'];
-        $data_pagamento = $param['data_pagamento'];   
+        $data_pagamento = $param['data_pagamento'];
         
         $object = new StdClass;
+        
         if ($data_pagamento > $data_vencimento)
         {
-            //$object = new StdClass;
-            $data_pagamento = new DateTime(TDate::date2us($data_pagamento));
-            $data_vencimento = new DateTime(TDate::date2us($data_vencimento));
-            $tempo = $data_pagamento->diff($data_vencimento);
-            $meses = $tempo->y * 12 + $tempo->m;
         
-            $object->saldo = ($valor * pow(1+1/100, $meses) - $valor)+($valor * 0.02);
-            $object->saldo = number_format($object->saldo, 2, ',', '.');        
-            $object->valor_pago = $valor + $object->saldo;
-            $object->valor_pago = number_format($object->valor_pago, 2, ',', '.');
+        $multa = 2/100;
+        $data_pagamento = new DateTime(TDate::date2us($data_pagamento));
+        $data_vencimento = new DateTime(TDate::date2us($data_vencimento));
+        $tempo = $data_pagamento->diff($data_vencimento);
+        $meses = $tempo->y * 12 + $tempo->m;
+        
+        $object->saldo = ($valor * pow(1+1/100, $meses) - $valor)+($valor * $multa);
+        $object->saldo = number_format($object->saldo, 2, '.', '');        
+        $object->valor_pago = $valor + $object->saldo;
+        $object->valor_pago = number_format($object->valor_pago, 2, '.', '');
         }
-        else{
-
-            $object->valor_pago = $object->valor;
-            $object->saldo = NULL;
+        else
+        {   
+            $object->valor_pago = $valor;
+            $object->saldo = 0.00;
         }
 
-
-         
         TForm::sendData('form_ContaPagar', $object);
     }
     
