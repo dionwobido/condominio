@@ -89,24 +89,22 @@ class ContaReceberList extends TPage
             return array_sum((array)$value);
         });
         
-        $column_status->setTransformer(function ($valor)
-        {
-            if($valor =="Liquidado")
-            {
-                return "<div style='background-color:green; color:white;
-                border-radius: 2px 2px 2px 2px; font-weight:bold;text-align:center;'>Liquidado</div>";
-            }
-            else if($valor =="Pendente")
-            {
-                return "<div style='background-color:red; color:white;
-                border-radius: 2px 2px 2px 2px; font-weight:bold;text-align:center;'>Pendente</div>";
-            }
-            else if($valor =="Parcelado")
-            {
-                return "<div style='background-color:orange; color:white;
-                border-radius: 2px 2px 2px 2px; font-weight:bold;text-align:center;'>Parcelado</div>";
-            }
-        });
+        $column_status->setTransformer(function($value, $object, $row) { 
+            $lbl = new TLabel(''); 
+            if ($value == 'Liquidado') { 
+                $lbl->setValue('Liquidado'); 
+                $lbl->class = 'label label-success'; 
+            } 
+            elseif ($value == 'Pendente') { 
+                $lbl->setValue('Pendente'); 
+                $lbl->class = 'label label-danger'; 
+            }  
+            elseif ($value == 'Parcelado') { 
+                $lbl->setValue('Parcelado'); 
+                $lbl->class = 'label label-warning'; 
+            }  
+            return $lbl; 
+            });
 
         $column_conta_id->enableAutoHide(500);
         $column_pessoa_id->enableAutoHide(500);
