@@ -65,6 +65,10 @@
         <action>ContaReceberList</action>
         <icon>fas:money-bill-alt fa-fw #00a9ff</icon>
       </menuitem>
+      <menuitem label="Dashboard">
+        <action>ContasDashboard</action>
+        <icon>fas:adjust fa-fw #00a9ff</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">
