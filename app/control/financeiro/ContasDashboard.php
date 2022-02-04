@@ -64,7 +64,7 @@ class ContasDashboard extends TPage
             $div->add( TElement::tag('div', $indicador5, ['class' => 'col-sm-6']) );
             $div->add( TElement::tag('div', $indicador6, ['class' => 'col-sm-6']) );
 
-            $table1 = TTable::create( ['class' => 'table table-stripad table-home', 'style' => 'border-collape:colapse']);
+            $table1 = TTable::create( ['class' => 'table table-striped table-hover', 'style' => 'border-collapse:collapse']);
             $table1->addSection('thead');
             $table1->addRowSet('', 'Valor', 'Valor Pago', 'Juros');
 
@@ -80,9 +80,9 @@ class ContasDashboard extends TPage
                 $row->addCell('R$' . number_format($juros, 2,',','.'))->style = 'text-align: left';
             }
 
-            $div->add(TElement::tag('div', TPanelGroup::pack('Valor Total a Pagar', $table1),['class' => 'class-sm-6']));
+            $div->add(TElement::tag('div', TPanelGroup::pack('Valor Total a Pagar', $table1),['class' => 'col-sm-6']));
 
-            $table2 = TTable::create( ['class' => 'table table-stripad table-home', 'style' => 'border-collape:colapse']);
+            $table2 = TTable::create( ['class' => 'table table-striped table-hover', 'style' => 'border-collapse:collapse']);
             $table2->addSection('thead');
             $table2->addRowSet('', 'Valor Receber', 'Valor Recebido', 'Juros Recebido');
 
@@ -98,7 +98,7 @@ class ContasDashboard extends TPage
                 $row->addCell('R$' . number_format($juros_recebido, 2,',','.'))->style = 'text-align: left';
             }
 
-            $div->add(TElement::tag('div', TPanelGroup::pack('Valor Total a Receber', $table2),['class' => 'class-sm-6']));
+            $div->add(TElement::tag('div', TPanelGroup::pack('Valor Total a Receber', $table2),['class' => 'col-sm-6']));
 
             $vbox->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
             $vbox->add($div);
