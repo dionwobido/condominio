@@ -69,6 +69,10 @@
         <action>ContasDashboard</action>
         <icon>fas:adjust fa-fw #00a9ff</icon>
       </menuitem>
+      <menuitem label="Boleto">
+        <action>BoletoForm</action>
+        <icon>fas:layer-group fa-fw #2e00ff</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">
