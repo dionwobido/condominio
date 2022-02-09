@@ -23,7 +23,7 @@
         <action>PessoaList</action>
         <icon>fas:users fa-fw #361bf2</icon>
       </menuitem>
-      <menuitem label="Cadastro Veiculos">
+      <menuitem label="Cadastro Veículos">
         <action>VeiculoList</action>
         <icon>fas:car fa-fw #361bf2</icon>
       </menuitem>
@@ -44,7 +44,7 @@
   <menuitem label="Agenda">
     <icon>fas:table fa-fw #6bbfed</icon>
     <menu>
-      <menuitem label="Calendario">
+      <menuitem label="Calendário">
         <action>CalendarioView</action>
         <icon>fas:table fa-fw #6bbfed</icon>
       </menuitem>
@@ -72,6 +72,19 @@
       <menuitem label="Boleto">
         <action>BoletoForm</action>
         <icon>fas:layer-group fa-fw #2e00ff</icon>
+      </menuitem>
+    </menu>
+  </menuitem>
+  <menuitem label="Relatório">
+    <icon>fas:paste fa-fw #04ff00</icon>
+    <menu>
+      <menuitem label="Relatório Conta Pagar">
+        <action>RelatorioContaPagar</action>
+        <icon>fas:paste fa-fw #04ff00</icon>
+      </menuitem>
+      <menuitem label="Relatório Conta Receber">
+        <action>RelatorioContaReceber</action>
+        <icon>fas:paste fa-fw #04ff00</icon>
       </menuitem>
     </menu>
   </menuitem>
