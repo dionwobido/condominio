@@ -129,7 +129,7 @@ class RelatorioContaPagar extends TPage
                     
                     $table->setHeaderCallback( function($table) {
                         $table->addRow();
-                        $table->addCell('Relatorio Dívida Unidade', 'center', 'header', 5);
+                        $table->addCell('Relatorio Contas Pagar', 'center', 'header', 5);
                         // Pega data inicio e data fim imprimindo no relatório 
                         $table->addRow();
                         $table->addCell('Data Início: ' . $this->data->data_inicio . ' - Data Fim: ' . $this->data->data_fim, 'center','title',5);
