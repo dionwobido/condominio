@@ -86,6 +86,10 @@
         <action>RelatorioContaReceber</action>
         <icon>fas:paste fa-fw #04ff00</icon>
       </menuitem>
+      <menuitem label="Relatório Estado Cidade">
+        <action>RelatorioEstadoCidade</action>
+        <icon>fas:city fa-fw #82808d</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">
