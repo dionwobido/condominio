@@ -90,6 +90,10 @@
         <action>RelatorioEstadoCidade</action>
         <icon>fas:city fa-fw #82808d</icon>
       </menuitem>
+      <menuitem label="Relatório Pessoa">
+        <action>RelatorioPessoa</action>
+        <icon>fas:user fa-fw #82808d</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">
